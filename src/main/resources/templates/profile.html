@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhml" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>Profile</title>
+    </head>
+    <body>
+        <p>Nom : <span th:text="${user.firstName}"></span></p>
+        <p>Banks :</p>
+        <ul th:each="bank: ${user.banks}">
+        <li> Name <span th:text="${bank.name}"></span> - Iban <span th:text="${bank.iban}"></span></li>
+        </ul>
+        <form method="post" th:action="@{/addBank}" th:object="${bank}">
+    		<input type="text" th:field="*{name}" />
+    		<input type="text" th:field="*{iban}" />
+    		<button type="submit">Créer</button>
+    	</form>
+        <p>Friends :</p>
+        <ul th:each="friend: ${user.friendship}">
+        <li> First Name <span th:text="${friend.firstName}"></span> - Last Name <span th:text="${friend.lastName}"></span></li>
+        </ul>
+        <a th:href="@{/deleteUser/{id}(id=${user.id})}">Delete my account</a>
+        <a th:href="@{/deleteBank/{iban}(iban=${bank.iban})}">Remove bank</a>
+    </body>
