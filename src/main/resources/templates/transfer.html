@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhml" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>Transfer</title>
+        <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    
+    <p>Friends :</p>
+        <ul th:each="friend: ${user.friendship}">
+        <li> First Name <span th:text="${friend.firstName}"></span> - Last Name <span th:text="${friend.lastName}"></span></li>
+        </ul>
+        
+<!--         <form method="post" th:action="@{/addFriend/{email}(email=${friend.email})}" th:object="${friend}"> -->
+<!--     		<input type="email"  th:field="*{email}" required/> -->
+<!--     		<button type="submit">Add Connection</button> -->
+<!--     	</form> -->
+		<form th:action="@{/addFriend}" method="post">
+    		<input type="text"  th:value="${email}" name="email" required/>
+    		<button type="submit">Add Connection</button>
+    	</form>
+    
+    </body>

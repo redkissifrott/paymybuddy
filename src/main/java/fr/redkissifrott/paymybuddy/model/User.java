@@ -14,13 +14,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.transaction.Transactional;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @DynamicUpdate
 public class User {
+
+	@Transient
+	private final Logger logger = LoggerFactory.getLogger(User.class);
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +36,7 @@ public class User {
 
 	private String password;
 
-//	private String pseudo;
+	// private String pseudo;
 
 	@Column(name = "first_name")
 	private String firstName;
@@ -50,15 +56,43 @@ public class User {
 
 	public void removeBank(Bank bank) {
 		banks.remove(bank);
-//		bank.setUser(null);
+		// bank.setUser(null);
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "friendship", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
-	private List<User> friends = new ArrayList<>();
+	private List<User> friends = new ArrayList<User>();
 
-	@ManyToMany(mappedBy = "friends", cascade = CascadeType.PERSIST)
-	private List<User> friendof = new ArrayList<>();
+	// logger.info("addFriend :{}", j.getFirstName());
+	// friends.add(friend);
+
+	public void addFriend(User friend) {
+		logger.info("friend :{}", friend.getFirstName());
+		this.friends.add(friend);
+	}
+
+	@ManyToMany(mappedBy = "friends", cascade = CascadeType.ALL)
+	private List<User> friendof = new ArrayList<User>();
+
+	public void addFriendof(User user) {
+		friendof.add(user);
+	}
+
+	public List<User> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(List<User> friends) {
+		this.friends = friends;
+	}
+
+	public List<User> getFriendof() {
+		return friendof;
+	}
+
+	public void setFriendof(List<User> friendof) {
+		this.friendof = friendof;
+	}
 
 	@Transactional
 	public List<User> friendship() {
@@ -92,13 +126,13 @@ public class User {
 		this.email = email;
 	}
 
-//	public String getPseudo() {
-//		return pseudo;
-//	}
-//
-//	public void setPseudo(String pseudo) {
-//		this.pseudo = pseudo;
-//	}
+	// public String getPseudo() {
+	// return pseudo;
+	// }
+	//
+	// public void setPseudo(String pseudo) {
+	// this.pseudo = pseudo;
+	// }
 
 	public String getFirstName() {
 		return firstName;

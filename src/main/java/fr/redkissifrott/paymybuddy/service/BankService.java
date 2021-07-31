@@ -21,8 +21,4 @@ public class BankService {
 		bankRepository.deleteByIban(iban);
 	}
 
-//	public Bank saveBank(Bank bank) {
-//		return bankRepository.save(bank);
-//	}
-
 }

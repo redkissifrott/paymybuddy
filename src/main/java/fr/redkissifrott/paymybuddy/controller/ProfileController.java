@@ -60,7 +60,7 @@ public class ProfileController {
 		// User user = userService.getUser(userId).get();
 		bank.setUser(userService.getUser(user.getId()).get());
 		user.addBank(bank);
-		return null;
+		return new ModelAndView("redirect:/profile");
 	}
 
 	@GetMapping("/profile/deleteBank/{iban}")
