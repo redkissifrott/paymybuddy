@@ -55,7 +55,7 @@ public class User {
 	}
 
 	public void removeBank(Bank bank) {
-		banks.remove(bank);
+		this.banks.remove(bank);
 		// bank.setUser(null);
 	}
 
@@ -63,11 +63,7 @@ public class User {
 	@JoinTable(name = "friendship", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
 	private List<User> friends = new ArrayList<User>();
 
-	// logger.info("addFriend :{}", j.getFirstName());
-	// friends.add(friend);
-
 	public void addFriend(User friend) {
-		logger.info("friend :{}", friend.getFirstName());
 		this.friends.add(friend);
 	}
 

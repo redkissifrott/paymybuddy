@@ -6,8 +6,8 @@ import fr.redkissifrott.paymybuddy.model.Bank;
 
 public interface BankRepository extends CrudRepository<Bank, String> {
 
-	Bank findByIban(String iban);
+	public Bank findByIban(String iban);
 
-	void deleteByIban(String iban);
+	public Long deleteByIban(String iban);
 
 }

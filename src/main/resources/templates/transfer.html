@@ -28,7 +28,7 @@
 			</option>
 		</select>
 		<input type="text"  th:value="${description}" name="description" required/>
-		<input type="number"  th:value="${amount}" name="amount" required/>
+		<input type="number"  min="1" th:value="${amount}" name="amount" required/>
 		<button type="submit">Pay</button>
 	</form>
 		 

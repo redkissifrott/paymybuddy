@@ -18,7 +18,7 @@ public class Bank {
 		return iban;
 	}
 
-	@ManyToOne(cascade = { CascadeType.ALL })
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "user_id")
 	private User user;
 

@@ -6,17 +6,18 @@
         <title>Profile</title>
     </head>
     <body>
+    	<a href="/logout">Log off</a>
         <p>Nom : <span th:text="${user.firstName}"></span></p>
+        <a th:href="@{/deleteUser}">Delete my account</a>
         <p>Banks :</p>
         <ul th:each="bank: ${user.banks}">
-        <li> Name <span th:text="${bank.name}"></span> - Iban <span th:text="${bank.iban}"></span></li>
+        <li> Name <span th:text="${bank.name}"></span> - Iban <span th:text="${bank.iban}"></span></li> 
+        <li><a th:href="@{/deleteBank/{iban}(iban=${bank.iban})}">Remove bank</a></li>
         </ul>
         <form method="post" th:action="@{/addBank}" th:object="${bank}">
     		<input type="text" th:field="*{name}" />
     		<input type="text" th:field="*{iban}" />
     		<button type="submit">Add Bank</button>
     	</form>
-        
-        <a th:href="@{/deleteUser/{id}(id=${user.id})}">Delete my account</a>
- <!--         <a th:href="@{/deleteBank/{iban}(iban=${bank.iban})}">Remove bank</a> -->
+    	<p>Balance : <span th:text="${user.balance}"></span></p>
     </body>

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import fr.redkissifrott.paymybuddy.model.User;
 import fr.redkissifrott.paymybuddy.service.UserService;
@@ -27,12 +28,12 @@ public class RegisterController {
 
 	@PostMapping("/addUser")
 	@Transactional
-	public String saveUser(@ModelAttribute User user) {
+	public ModelAndView saveUser(@ModelAttribute User user) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String encodedPassword = passwordEncoder.encode(user.getPassword());
 		user.setPassword(encodedPassword);
 		userService.saveUser(user);
-		return "login";
+		return new ModelAndView("redirect:/login");
 	}
 
 }

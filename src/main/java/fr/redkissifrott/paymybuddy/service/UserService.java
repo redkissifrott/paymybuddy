@@ -2,9 +2,15 @@ package fr.redkissifrott.paymybuddy.service;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import fr.redkissifrott.paymybuddy.model.User;
@@ -28,8 +34,8 @@ public class UserService {
 		return user;
 	}
 
-	public void deleteUser(final int id) {
-		userRepository.deleteById(id);
+	public void deleteUser(User user) {
+		userRepository.delete(user);
 	}
 
 	public User saveUser(User user) {
@@ -38,6 +44,15 @@ public class UserService {
 
 	public Iterable<User> getUsers() {
 		return userRepository.findAll();
+	}
+
+	public void logoutUser(HttpServletRequest request,
+			HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		if (auth != null) {
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
 	}
 
 }

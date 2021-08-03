@@ -1,5 +1,7 @@
 package fr.redkissifrott.paymybuddy.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,9 @@ public class ProfileController {
 	@Autowired
 	private BankService bankService;
 
+	private final Logger logger = LoggerFactory
+			.getLogger(ProfileController.class);
+
 	// @Autowired
 	// private CustomUserDetails customUserDetails;
 
@@ -42,13 +47,14 @@ public class ProfileController {
 		return "profile";
 	}
 
-	@GetMapping("deleteUser")
+	@GetMapping("/deleteUser")
 	public ModelAndView deleteUser(
 			@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		User user = userService.getUser(customUserDetails.getId()).get();
-		userService.deleteUser(user.getId());
-		// userService.deleteUser(userId);
-		return new ModelAndView("redirect:/");
+		logger.info("USER :{}", user.getFirstName());
+		// userService.logoutUser(null, null)
+		userService.deleteUser(user);
+		return new ModelAndView("redirect:/logout");
 	}
 
 	@PostMapping("/addBank")
@@ -63,16 +69,16 @@ public class ProfileController {
 		return new ModelAndView("redirect:/profile");
 	}
 
-	@GetMapping("/profile/deleteBank/{iban}")
-	public void deleteBank(
+	@Transactional
+	@GetMapping("/deleteBank/{iban}")
+	public ModelAndView deleteBank(
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@PathVariable("iban") String iban) {
 		User user = userService.getUser(customUserDetails.getId()).get();
-		Bank bank = bankService.getBank("iban");
-		System.out.println(bank.getName());
+		Bank bank = bankService.getBank(iban);
 		user.removeBank(bank);
 		bankService.deleteBank(iban);
-
+		return new ModelAndView("redirect:/profile");
 	}
 
 }
