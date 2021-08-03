@@ -20,13 +20,21 @@
         <li> First Name <span th:text="${friend.firstName}"></span> - Last Name <span th:text="${friend.lastName}"></span></li>
         </ul>
         
-	
-	<select th:field="*{friend}">
-		<option th:each="friend: ${user.friendship}"
-				th:value="${friend.id}"
-				th:text="${friend.firstName}+' '+${friend.lastName}">
-		</option>
-	</select>
+	<form th:action="@{/payFriend}" method="post">
+		<select th:name="friendId">
+			<option th:each="friend: ${user.friendship}" 
+					th:value="${friend.id}"
+					th:text="${friend.firstName}+' '+${friend.lastName}">
+			</option>
+		</select>
+		<input type="text"  th:value="${description}" name="description" required/>
+		<input type="number"  th:value="${amount}" name="amount" required/>
+		<button type="submit">Pay</button>
+	</form>
+		 
 		
+	
+	
+	
     
     </body>

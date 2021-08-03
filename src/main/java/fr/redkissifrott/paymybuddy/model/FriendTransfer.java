@@ -1,5 +1,6 @@
 package fr.redkissifrott.paymybuddy.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,7 +12,7 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "transfer_id")
 public class FriendTransfer extends Transfer {
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "friend_id")
 	private User friend;
 

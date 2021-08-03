@@ -40,10 +40,4 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	// @Modifying
-	// @Query(value = DBConstants.SAVE_FRIEND, nativeQuery = true)
-	// public void addFriend(int userId, int friendId) {
-	// logger.info("VARIABLES :{} {}", userId, friendId);
-	// }
-
 }

@@ -126,14 +126,6 @@ public class User {
 		this.email = email;
 	}
 
-	// public String getPseudo() {
-	// return pseudo;
-	// }
-	//
-	// public void setPseudo(String pseudo) {
-	// this.pseudo = pseudo;
-	// }
-
 	public String getFirstName() {
 		return firstName;
 	}
