@@ -15,11 +15,6 @@
     		<button type="submit">Add Connection</button>
     	</form>
     	
-    <p>Friends :</p>
-        <ul th:each="friend: ${user.friendship}">
-        <li> First Name <span th:text="${friend.firstName}"></span> - Last Name <span th:text="${friend.lastName}"></span></li>
-        </ul>
-        
 	<form th:action="@{/payFriend}" method="post">
 		<select th:name="friendId">
 			<option th:each="friend: ${user.friendship}" 
@@ -31,6 +26,35 @@
 		<input type="number"  min="1" th:value="${amount}" name="amount" required/>
 		<button type="submit">Pay</button>
 	</form>
+		<div class="container special">
+		<h2 class="h2">My Transactions</h2>
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<thead>
+					<tr>
+						<th>Connection</th>
+						<th>Description</th>
+						<th>Amount</th>
+						<th>Charges</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${friendTransfers.empty}">
+						<td colspan="3">Not yet transaction</td>
+					</tr>
+					<tr th:each="transaction: ${transactions}" th:utext="${transaction}">
+<!-- 					<tr th:each="tranfer: ${friendTransfers}"> -->
+<!-- 					<td>coucou</td> -->
+<!-- 					<td><span th:text="*{friend.firstName}+' '+*{friend.lastName}"></span></td> -->
+<!-- 						<td><span th:text="*{friend.firstName}+' '+*{friend.lastName}"></span></td> -->
+<!-- 						<td><span th:text="${transfer.description}"></span></td> -->
+<!-- 						<td><span th:text="*{amount}+'€'"></span></td> -->
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		</div>
+	
 		 
 		
 	

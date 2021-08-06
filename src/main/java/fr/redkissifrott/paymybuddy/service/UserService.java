@@ -1,5 +1,6 @@
 package fr.redkissifrott.paymybuddy.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import fr.redkissifrott.paymybuddy.model.FriendTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
+import fr.redkissifrott.paymybuddy.repository.FriendTransferRepository;
 import fr.redkissifrott.paymybuddy.repository.UserRepository;
 
 @Service
@@ -21,6 +24,9 @@ public class UserService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	FriendTransferRepository friendTransferRepository;
 
 	private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -53,6 +59,10 @@ public class UserService {
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
+	}
+
+	public ArrayList<FriendTransfer> friendTransfers(User user) {
+		return friendTransferRepository.findByUser(user);
 	}
 
 }

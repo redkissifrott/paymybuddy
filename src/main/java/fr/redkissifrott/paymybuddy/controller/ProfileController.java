@@ -1,5 +1,7 @@
 package fr.redkissifrott.paymybuddy.controller;
 
+import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import fr.redkissifrott.paymybuddy.customUser.CustomUserDetails;
 import fr.redkissifrott.paymybuddy.model.Bank;
+import fr.redkissifrott.paymybuddy.model.BankTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
 import fr.redkissifrott.paymybuddy.service.BankService;
+import fr.redkissifrott.paymybuddy.service.TransferService;
 import fr.redkissifrott.paymybuddy.service.UserService;
 
 @Controller
@@ -27,6 +33,9 @@ public class ProfileController {
 
 	@Autowired
 	private BankService bankService;
+
+	@Autowired
+	private TransferService transferService;
 
 	private final Logger logger = LoggerFactory
 			.getLogger(ProfileController.class);
@@ -41,7 +50,8 @@ public class ProfileController {
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			Model model) {
 		User user = userService.getUser(customUserDetails.getId()).get();
-		// User user = userService.getUser(userId).get();
+		// Iterable<BankTransfer> bankTransfers = new ArrayList<>();
+		model.addAttribute("bankTransfer", new BankTransfer());
 		model.addAttribute("user", user);
 		model.addAttribute("bank", new Bank());
 		return "profile";
@@ -55,6 +65,26 @@ public class ProfileController {
 		// userService.logoutUser(null, null)
 		userService.deleteUser(user);
 		return new ModelAndView("redirect:/logout");
+	}
+
+	@Transactional
+	@RequestMapping("/bankTransfer")
+	public ModelAndView bankTransfer(
+			@AuthenticationPrincipal CustomUserDetails customUserDetails,
+			@RequestParam String bankIban,
+			@RequestParam(value = "description") String description,
+			@RequestParam(value = "amount") Integer amount) {
+		User user = userService.getUser(customUserDetails.getId()).get();
+		Bank bank = bankService.getBank(bankIban);
+		// User friend = userService.getUser(friendId).get();
+		BankTransfer bankTransfer = new BankTransfer();
+		bankTransfer.setUser(user);
+		bankTransfer.setBank(bank);
+		bankTransfer.setDescription(description);
+		bankTransfer.setAmount(amount);
+		bankTransfer.setDate(LocalDate.now());
+		transferService.saveBankTransfer(bankTransfer);
+		return new ModelAndView("redirect:/profile");
 	}
 
 	@PostMapping("/addBank")

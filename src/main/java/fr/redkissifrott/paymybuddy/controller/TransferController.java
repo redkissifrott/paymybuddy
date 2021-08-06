@@ -1,6 +1,8 @@
 package fr.redkissifrott.paymybuddy.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -36,11 +38,33 @@ public class TransferController {
 	@GetMapping("/transfer")
 	public String transfer(
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			Model model) {
+			Model model, FriendTransfer friendtransfer) {
 		User user = userService.getUser(customUserDetails.getId()).get();
-		// User user = userService.getUser(userId).get();
+
+		Iterable<FriendTransfer> friendTransfers = userService
+				.friendTransfers(user);
+		model.addAttribute("friendTransfers", friendTransfers);
+		model.addAttribute("transfer", new FriendTransfer());
 		model.addAttribute("user", user);
 		model.addAttribute("friend", new User());
+		List<String> transactions = new ArrayList<>();
+		for (FriendTransfer f : friendTransfers) {
+			logger.info("FRIENDTRANSFER : {}", f.getFriend().getFirstName());
+			logger.info("FRIENDTRANSFER : {}", f.getDescription());
+			String connection = f.getFriend().getFirstName() + " "
+					+ f.getFriend().getLastName();
+			String description = f.getDescription();
+			String amount = Integer.toString(f.getAmount()) + "€";
+			String charges = "";
+			if (f.getCharges() != null) {
+				charges = Double.toString(f.getCharges()) + "€";
+			}
+			String insert = "<td>" + connection + "</td>" + "<td>" + description
+					+ "</td>" + "<td>" + amount + "</td>" + "<td>" + charges
+					+ "</td>";
+			transactions.add(insert);
+		}
+		model.addAttribute("transactions", transactions);
 		return "transfer";
 	}
 
@@ -61,7 +85,7 @@ public class TransferController {
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@RequestParam Integer friendId,
 			@RequestParam(value = "description") String description,
-			@RequestParam(value = "amount") Float amount) {
+			@RequestParam(value = "amount") Integer amount) {
 		User user = userService.getUser(customUserDetails.getId()).get();
 		User friend = userService.getUser(friendId).get();
 		FriendTransfer friendTransfer = new FriendTransfer();

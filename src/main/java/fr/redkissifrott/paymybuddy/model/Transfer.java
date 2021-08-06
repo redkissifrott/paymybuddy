@@ -12,6 +12,15 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Transfer {
@@ -34,7 +43,9 @@ public abstract class Transfer {
 
 	private String description;
 
-	private Float amount;
+	private Integer amount;
+
+	private Double charges;
 
 	private LocalDate date;
 
@@ -54,11 +65,11 @@ public abstract class Transfer {
 		this.description = description;
 	}
 
-	public float getAmount() {
+	public Integer getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 

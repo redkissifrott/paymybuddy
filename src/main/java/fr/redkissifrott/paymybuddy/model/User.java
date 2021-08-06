@@ -44,7 +44,7 @@ public class User {
 	@Column(name = "last_name")
 	private String lastName;
 
-	private float balance;
+	private double balance;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	List<Bank> banks = new ArrayList<>();
@@ -98,6 +98,17 @@ public class User {
 		return friendship;
 	}
 
+	@OneToMany(mappedBy = "user")
+	public List<Transfer> transfers = new ArrayList<>();
+
+	public List<Transfer> getTransfers() {
+		return transfers;
+	}
+
+	public void setTransfers(List<Transfer> transfers) {
+		this.transfers = transfers;
+	}
+
 	public List<Bank> getBanks() {
 		return banks;
 	}
@@ -138,12 +149,12 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public float getBalance() {
+	public double getBalance() {
 		return balance;
 	}
 
-	public void setBalance(float balance) {
-		this.balance = balance;
+	public void setBalance(double d) {
+		this.balance = d;
 	}
 
 	public String getPassword() {
