@@ -29,7 +29,7 @@ public abstract class Transfer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "user_id")
 	private User user;
 

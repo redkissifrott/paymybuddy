@@ -1,0 +1,16 @@
+.input-symbol-euro {
+    position: relative;
+}
+.input-symbol-euro input {
+     padding-right:0.3em;
+}
+.input-symbol-euro:before {
+    position: absolute;
+    top: 0;
+    content:"€";
+    left: 0.3em;
+    text-align: left;
+}
+input {
+	text-align: end;
+}

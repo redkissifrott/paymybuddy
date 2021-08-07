@@ -59,7 +59,7 @@ public class User {
 		// bank.setUser(null);
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinTable(name = "friendship", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
 	private List<User> friends = new ArrayList<User>();
 
@@ -67,7 +67,7 @@ public class User {
 		this.friends.add(friend);
 	}
 
-	@ManyToMany(mappedBy = "friends", cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "friends", cascade = CascadeType.MERGE)
 	private List<User> friendof = new ArrayList<User>();
 
 	public void addFriendof(User user) {

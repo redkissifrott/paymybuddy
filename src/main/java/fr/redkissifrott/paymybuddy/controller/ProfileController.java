@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.redkissifrott.paymybuddy.customUser.CustomUserDetails;
+import fr.redkissifrott.paymybuddy.exception.TransferException;
 import fr.redkissifrott.paymybuddy.model.Bank;
 import fr.redkissifrott.paymybuddy.model.BankTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
@@ -67,13 +70,14 @@ public class ProfileController {
 		return new ModelAndView("redirect:/logout");
 	}
 
-	@Transactional
+	// @Transactional
 	@RequestMapping("/bankTransfer")
 	public ModelAndView bankTransfer(
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@RequestParam String bankIban,
 			@RequestParam(value = "description") String description,
-			@RequestParam(value = "amount") Integer amount) {
+			@RequestParam(value = "amount") Integer amount)
+			throws TransferException {
 		User user = userService.getUser(customUserDetails.getId()).get();
 		Bank bank = bankService.getBank(bankIban);
 		// User friend = userService.getUser(friendId).get();
@@ -84,6 +88,14 @@ public class ProfileController {
 		bankTransfer.setAmount(amount);
 		bankTransfer.setDate(LocalDate.now());
 		transferService.saveBankTransfer(bankTransfer);
+		return new ModelAndView("redirect:/profile");
+	}
+
+	@ExceptionHandler({TransferException.class})
+	public ModelAndView transferErrorMessage(TransferException e,
+			RedirectAttributes redirAttrs) {
+		redirAttrs.addFlashAttribute("errorMessage", e.getMessage());
+		logger.info("error : {}", e.getMessage());
 		return new ModelAndView("redirect:/profile");
 	}
 

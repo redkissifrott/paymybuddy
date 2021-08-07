@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.redkissifrott.paymybuddy.constants.TransferCharges;
+import fr.redkissifrott.paymybuddy.exception.TransferException;
 import fr.redkissifrott.paymybuddy.model.BankTransfer;
 import fr.redkissifrott.paymybuddy.model.FriendTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
 import fr.redkissifrott.paymybuddy.repository.BankTransferRepository;
 import fr.redkissifrott.paymybuddy.repository.FriendTransferRepository;
+import fr.redkissifrott.paymybuddy.repository.UserRepository;
 
 @Service
 public class TransferService {
@@ -20,31 +22,48 @@ public class TransferService {
 	@Autowired
 	BankTransferRepository bankTransferRepository;
 
-	@Transactional(rollbackFor = Exception.class)
-	public FriendTransfer saveFriendTransfer(FriendTransfer friendTransfer) {
+	@Autowired
+	UserRepository userRepository;
+
+	@Transactional(rollbackFor = TransferException.class)
+	public FriendTransfer saveFriendTransfer(FriendTransfer friendTransfer)
+			throws TransferException {
 		User user = friendTransfer.getUser();
-		User friend = friendTransfer.getFriend();
-		Integer amount = friendTransfer.getAmount();
-		double transferCharges = amount * TransferCharges.TRANSFER_CHARGES;
-		user.setBalance(user.getBalance() - amount - transferCharges);
-		friendTransfer.setCharges(transferCharges);
-		friend.setBalance(friend.getBalance() + amount);
+		// User friend = friendTransfer.getFriend();
+		Integer amount = friendTransfer.getAmount() * -1;
+		Double transferCharges = balanceWithdrawal(user, amount);
+		friendTransfer.setCharges(transferCharges * -1);
 		return friendTransferRepository.save(friendTransfer);
 	}
 
-	@Transactional(rollbackFor = Exception.class)
-	public BankTransfer saveBankTransfer(BankTransfer bankTransfer) {
+	@Transactional(rollbackFor = TransferException.class)
+	public BankTransfer saveBankTransfer(BankTransfer bankTransfer)
+			throws TransferException {
 		User user = bankTransfer.getUser();
 		Integer amount = bankTransfer.getAmount();
-		double transferCharges = 0;
 		if (bankTransfer.getDescription().equals("withdrawal")) {
-			transferCharges = amount * TransferCharges.TRANSFER_CHARGES;
 			amount = bankTransfer.getAmount() * -1;
+			Double transferCharges = balanceWithdrawal(user, amount);
 			bankTransfer.setAmount(amount);
 			bankTransfer.setCharges(transferCharges);
+		} else {
+			user.setBalance(user.getBalance() + amount);
 		}
-		user.setBalance(user.getBalance() + amount - transferCharges);
 		return bankTransferRepository.save(bankTransfer);
+	}
+
+	// @Transactional(propagation = Propagation.MANDATORY)
+	public Double balanceWithdrawal(User user, Integer amount)
+			throws TransferException {
+		Double balance = user.getBalance();
+		double transferCharges = amount * TransferCharges.TRANSFER_CHARGES;
+		double newBalance = balance + amount + transferCharges;
+		if (newBalance < 0) {
+			throw new TransferException("Your account balance (" + balance
+					+ "€) is insufficient for this transaction");
+		}
+		user.setBalance(newBalance);
+		return transferCharges;
 	}
 
 }

@@ -5,25 +5,29 @@
         <meta charset="UTF-8">
         <title>Transfer</title>
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+         <link th:href="@{/styles.css}" rel="stylesheet" />
     	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
     <body>
     
     <form th:action="@{/addFriend}" method="post">
-    		<input type="text"  th:value="${email}" name="email" required/>
+    		<input type="email"  th:value="${email}" name="email" required/>
     		<button type="submit">Add Connection</button>
     	</form>
-    	
+    
+<!--     <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage}"></div>	 -->
+	<div th:if="${errorMessage}" style="color:red;font-style:italic" th:utext="${errorMessage}">..</div>
 	<form th:action="@{/payFriend}" method="post">
 		<select th:name="friendId">
+		<option disabled="disabled">Select A Connection</option>
 			<option th:each="friend: ${user.friendship}" 
 					th:value="${friend.id}"
 					th:text="${friend.firstName}+' '+${friend.lastName}">
 			</option>
 		</select>
 		<input type="text"  th:value="${description}" name="description" required/>
-		<input type="number"  min="1" th:value="${amount}" name="amount" required/>
+		<span class="input-symbol-euro right"><input type="number"  min="1" th:value="${amount}" name="amount" th:placeholder="0"  required/></span>
 		<button type="submit">Pay</button>
 	</form>
 		<div class="container special">
