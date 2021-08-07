@@ -52,10 +52,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/users")
-				.authenticated().anyRequest().permitAll().and().formLogin()
-				.usernameParameter("email").defaultSuccessUrl("/profile")
-				.permitAll().and().logout().logoutSuccessUrl("/").permitAll();
+		http.csrf().disable()
+
+				.authorizeRequests().antMatchers("/", "home").permitAll()
+				.antMatchers("/resources/**").permitAll().anyRequest()
+				.authenticated().and()
+
+				.formLogin().loginPage("/login").usernameParameter("email")
+				.loginProcessingUrl("/authentication").permitAll()
+				.defaultSuccessUrl("/profile").permitAll()
+
+				.and().logout().logoutSuccessUrl("/").permitAll().and()
+
+				.rememberMe().key("uniqueAndSecret");
 	}
 
 }
