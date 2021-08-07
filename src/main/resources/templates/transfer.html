@@ -5,13 +5,14 @@
         <meta charset="UTF-8">
         <title>Transfer</title>
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-         <link th:href="@{/styles.css}" rel="stylesheet" />
+        <link th:href="@{/styles.css}" rel="stylesheet" />
     	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
     <body>
     
-    <form th:action="@{/addFriend}" method="post">
+    <div th:if="${notFoundMessage}" style="color:red;font-style:italic" th:utext="${notFoundMessage}">..</div>
+    <form th:action="@{/addFriend/{email}}" method="get">
     		<input type="email"  th:value="${email}" name="email" required/>
     		<button type="submit">Add Connection</button>
     	</form>

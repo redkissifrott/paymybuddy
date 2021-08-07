@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.redkissifrott.paymybuddy.customUser.CustomUserDetails;
+import fr.redkissifrott.paymybuddy.exception.FriendNotFoundException;
 import fr.redkissifrott.paymybuddy.exception.TransferException;
 import fr.redkissifrott.paymybuddy.model.FriendTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
@@ -71,12 +72,16 @@ public class TransferController {
 	}
 
 	@Transactional
-	@RequestMapping("/addFriend")
+	@RequestMapping(value = "/addFriend/{email}")
 	public ModelAndView saveFriend(Model model,
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@RequestParam(value = "email") String email) {
+			@RequestParam(value = "email") String email)
+			throws FriendNotFoundException {
 		User user = userService.getUser(customUserDetails.getId()).get();
 		User friend = userService.getUserByEmail(email);
+		if (friend == null)
+			throw new FriendNotFoundException("This email (" + email
+					+ ") does not belong to a user of our app - You can search the list of users <a href='/users'>here</a>");
 		logger.info("FRIENDTRANSFER : {}", friend.getFirstName());
 		user.addFriend(friend);
 		return new ModelAndView("redirect:/transfer");
@@ -106,6 +111,14 @@ public class TransferController {
 	public ModelAndView transferErrorMessage(TransferException e,
 			RedirectAttributes redirAttrs) {
 		redirAttrs.addFlashAttribute("errorMessage", e.getMessage());
+		logger.info("error : {}", e.getMessage());
+		return new ModelAndView("redirect:/transfer");
+	}
+
+	@ExceptionHandler({FriendNotFoundException.class})
+	public ModelAndView friendNotFoundMessage(FriendNotFoundException e,
+			RedirectAttributes redirAttrs) {
+		redirAttrs.addFlashAttribute("notFoundMessage", e.getMessage());
 		logger.info("error : {}", e.getMessage());
 		return new ModelAndView("redirect:/transfer");
 	}

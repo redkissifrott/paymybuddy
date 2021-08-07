@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <title>Profile</title>
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+        <link th:href="@{/styles.css}" rel="stylesheet" />
     	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
@@ -32,6 +33,9 @@
 	</form>
         
         <h2 class="h2">My Banks :</h2>
+        	<div th:if="${user.banks.empty}">
+				No bank linked to your account yet
+			</div>
         <div th:each="bank: ${user.banks}">
         <p> Name <span th:text="${bank.name}"></span> - Iban <span th:text="${bank.iban}"></span><a th:href="@{/deleteBank/{iban}(iban=${bank.iban})}">Remove bank</a></p> 
         <table class="table table-striped table-sm">

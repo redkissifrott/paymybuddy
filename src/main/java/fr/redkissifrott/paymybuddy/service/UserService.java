@@ -1,7 +1,6 @@
 package fr.redkissifrott.paymybuddy.service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import fr.redkissifrott.paymybuddy.exception.FriendNotFoundException;
 import fr.redkissifrott.paymybuddy.model.FriendTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
 import fr.redkissifrott.paymybuddy.repository.FriendTransferRepository;
@@ -68,14 +65,17 @@ public class UserService {
 		return friendTransferRepository.findByUser(user);
 	}
 
-	@Transactional(rollbackFor = FriendNotFoundException.class)
-	public void addFriendService(User user, User friend) {
-		List<User> userList = new ArrayList<>();
-		for (User u : getUsers()) {
-			userList.add(u);
-		}
-		// if (.co)
-		user.addFriend(friend);
-	}
+	// @Transactional(rollbackFor = FriendNotFoundException.class)
+	// public void addFriendService(User user, String email) {
+	// List<User> userList = new ArrayList<>();
+	// for (User u : getUsers()) {
+	// userList.add(u);
+	// }
+	// if (!userList.contains(friend)) {
+	// throw new FriendNotFoundException("This email ("+email+ ")does not belong
+	// to a user of our app - You can search the list of users here")
+	// }
+	// user.addFriend(friend);
+	// }
 
 }
