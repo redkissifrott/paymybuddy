@@ -2,31 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhml" xmlns:th="http://www.thymeleaf.org">
     
     <head>
-        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <title>Welcome to PayMyBuddy</title>
+        <link th:href="@{/styles.css}" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
     	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
    		<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
     <body>
-    <div th:replace="fragments/header :: header">
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">Pay My Buddy</a>
-          </div>
-          <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Home</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container text-center">
-        <h1>Welcome to PayMyBuddy</h1>
-        <h3><a href="/register">Register</a></h3>
-        <h3><a href="/login">Login</a></h3>
+    <div class="container text-center max-width:700px home">
+    	<img class="img-fluid max-width: 70%" th:src="@{/img/PayMyBuddy.png}"/>
+    
+        
+        <a class="btn btn-primary btn-lg homebtn" href="/register">Register</a>
+        <a class="btn btn-primary btn-lg homebtn"  href="/login">Login</a>
     </div>
 </body>
 </html>

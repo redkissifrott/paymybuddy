@@ -1,3 +1,11 @@
+body {
+	background-color: white !important;
+}
+
+h2 {
+	color:red;
+}
+
 .input-symbol-euro {
     position: relative;
 }
@@ -13,4 +21,8 @@
 }
 input {
 	text-align: end;
+}
+
+.homebtn {
+	margin : 1.3em;
 }
