@@ -1,7 +1,5 @@
 package fr.redkissifrott.paymybuddy.controller;
 
-import java.security.Principal;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +21,8 @@ public class HomeController {
 	}
 
 	@GetMapping("/")
-	String index(Principal principal) {
-		return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
+	String index() {
+		return "home";
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
