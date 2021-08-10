@@ -7,7 +7,7 @@ body {
 .form-signin {
   max-width: 330px;
   padding: 15px;
-  margin: 0 auto;
+  margin: 30px auto;
 }
 .form-signin .form-signin-heading,
 .form-signin .checkbox {
@@ -35,4 +35,12 @@ body {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.input-group {
+	margin: 30px auto;
+}
+
+.input[name="remember-me"] {
+	margin: 30px auto 60px;
 }

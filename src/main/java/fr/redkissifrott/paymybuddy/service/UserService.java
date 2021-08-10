@@ -13,7 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import fr.redkissifrott.paymybuddy.exception.EmailExistsException;
+import fr.redkissifrott.paymybuddy.exception.TransferException;
 import fr.redkissifrott.paymybuddy.model.FriendTransfer;
 import fr.redkissifrott.paymybuddy.model.User;
 import fr.redkissifrott.paymybuddy.repository.FriendTransferRepository;
@@ -26,7 +29,7 @@ public class UserService {
 	UserRepository userRepository;
 
 	@Autowired
-	FriendTransferRepository friendTransferRepository;
+	public FriendTransferRepository friendTransferRepository;
 
 	private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -44,7 +47,13 @@ public class UserService {
 		userRepository.delete(user);
 	}
 
-	public User saveUser(User user) {
+	@Transactional(rollbackFor = TransferException.class)
+	public User saveUser(User user) throws EmailExistsException {
+		if (userRepository.findUserByEmail(user.getEmail()) != null) {
+			throw new EmailExistsException(
+					"There is already an account with this email address ("
+							+ user.getEmail() + ")");
+		}
 		return userRepository.save(user);
 	}
 

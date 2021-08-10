@@ -29,9 +29,10 @@ public class TransferService {
 	public FriendTransfer saveFriendTransfer(FriendTransfer friendTransfer)
 			throws TransferException {
 		User user = friendTransfer.getUser();
-		// User friend = friendTransfer.getFriend();
+		User friend = friendTransfer.getFriend();
 		Integer amount = friendTransfer.getAmount() * -1;
 		Double transferCharges = balanceWithdrawal(user, amount);
+		friend.setBalance(friend.getBalance() + amount * -1);
 		friendTransfer.setCharges(transferCharges * -1);
 		return friendTransferRepository.save(friendTransfer);
 	}
@@ -60,7 +61,9 @@ public class TransferService {
 		double newBalance = balance + amount + transferCharges;
 		if (newBalance < 0) {
 			throw new TransferException("Your account balance (" + balance
-					+ "€) is insufficient for this transaction");
+					+ "€) is insufficient for this transaction (" + amount * -1
+					+ " + " + transferCharges * -1 + " = "
+					+ ((amount * -1) + (transferCharges * -1)) + "€)");
 		}
 		user.setBalance(newBalance);
 		return transferCharges;
