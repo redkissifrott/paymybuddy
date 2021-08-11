@@ -1,6 +1,8 @@
 package fr.redkissifrott.paymybuddy.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -70,8 +76,28 @@ public class UserService {
 		}
 	}
 
-	public ArrayList<FriendTransfer> friendTransfers(User user) {
-		return friendTransferRepository.findByUser(user);
+	final private ArrayList<FriendTransfer> friendTransfers(User user) {
+		return friendTransferRepository.findAllByUserOrderByIdDesc(user);
+	}
+
+	public Page<FriendTransfer> findPaginated(User user, Pageable pageable) {
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		List<FriendTransfer> list;
+
+		if (friendTransfers(user).size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize,
+					friendTransfers(user).size());
+			list = friendTransfers(user).subList(startItem, toIndex);
+		}
+		Page<FriendTransfer> friendTransferPage = new PageImpl<FriendTransfer>(
+				list, PageRequest.of(currentPage, pageSize),
+				friendTransfers(user).size());
+
+		return friendTransferPage;
 	}
 
 	// @Transactional(rollbackFor = FriendNotFoundException.class)

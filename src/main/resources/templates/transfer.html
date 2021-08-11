@@ -41,8 +41,11 @@
             <li class="breadcrumb-item active" aria-current="page">Transfer</li>
          </ul>
 		</header>
+		
 	<div class="container" style="width: 600px">	
     <div th:if="${notFoundMessage}" style="color:red;font-style:italic" th:utext="${notFoundMessage}">..</div>
+    <div th:if="${errorMessage}" style="color:red;font-style:italic" th:utext="${errorMessage}">..</div>
+    
     <div class="d-flex justify-content-between align-items-baseline" style="margin: 0 -45px 0 -15px">
     	<h4 class="align-self-baseline">Send Money</h4>
     	<form th:action="@{/addFriend/{email}}" method="get">
@@ -52,30 +55,33 @@
     		</div>
     	</form>
     </div>
-	<div th:if="${errorMessage}" style="color:red;font-style:italic" th:utext="${errorMessage}">..</div>
-	
+    
 	<form th:action="@{/payFriend}" method="post" >
 	<div class="container-fluid" style="width: 600px">
 	<div style="background-color: #f5f5f5; padding: 3rem 1rem; margin: 0 -30px" class="row">
-	<div class="col-4" style="height: 33px; width: 100%">
-		<select th:name="friendId" class="form-select" style="height: 33px; width: 100%; padding: 0 7px">
-		<option selected>Select A Connection</option>
-			<option th:each="friend: ${user.friendship}" 
-					th:value="${friend.id}"
-					th:text="${friend.firstName}+' '+${friend.lastName}">
-			</option>
-		</select>
-	</div >
+	
+		<div class="col-4" style="height: 33px; width: 100%">
+			<select th:name="friendId" class="form-select" style="height: 33px; width: 100%; padding: 0 7px" required>
+				<option value="">Select A Connection</option>
+				<option th:each="friend: ${user.friendship}" 
+						th:value="${friend.id}"
+						th:text="${friend.firstName}+' '+${friend.lastName}">
+				</option>
+			</select>
+		</div >
+	
 		<div class="col-4" style="height: 100%; width: 100%; padding: 0 7px">
 			<input type="text"  th:value="${description}" name="description" class="form-control"  placeholder="Description"/>
 		</div>
+		
 		<div class="input-group col" style="height: 100%; width: 100%; margin: 0 7px;">
    			<div class="input-group-addon">
-    		<i class="fas fa-euro-sign"></i>
-    		<span>€</span>
+<!--     			<i class="fas fa-euro-sign"></i> -->
+    			<span>€</span>
     		</div>
-    		<input type="number"  min="1" th:value="${amount}" name="amount" th:placeholder="0"  class="form-control" style="padding-right: 0; padding-left: 0"/>
+    			<input type="number"  min="1" th:value="${amount}" name="amount" th:placeholder="0"  class="form-control" style="padding-right: 0; padding-left: 0"/>
     	</div>
+    	
     	<div class="col" style="height: 100%; width: 100%">
 			<button type="submit" class="btn btn-success font-weight-bold" style="height: 100%; width: 100%">Pay</button>
 		</div>
@@ -84,7 +90,7 @@
 	</form>
 	
 	
-		<div class="container-fluid" style="width: 600px; padding: 15px 0; margin: 0 -15px;">
+		<div class="container-fluid" style="width: 630px; padding: 15px 0; margin: 0 -15px;">
 		<h4>My Transactions</h4>
 		<div class="table">
 			<table class="table table-striped">
@@ -97,28 +103,47 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:if="${friendTransfers.empty}">
+					<tr th:if="${transactions.empty}">
 						<td colspan="3">Not yet transaction</td>
 					</tr>
 					<tr th:each="transaction: ${transactions}" th:utext="${transaction}">
-<!-- 					<tr th:each="tranfer: ${friendTransfers}"> -->
+<!-- 					<tr th:each="tranfer: ${friendTransferPage}"> -->
 <!-- 					<td>coucou</td> -->
-<!-- 					<td><span th:text="*{friend.firstName}+' '+*{friend.lastName}"></span></td> -->
-<!-- 						<td><span th:text="*{friend.firstName}+' '+*{friend.lastName}"></span></td> -->
-<!-- 						<td><span th:text="${transfer.description}"></span></td> -->
-<!-- 						<td><span th:text="*{amount}+'€'"></span></td> -->
-<!-- 					</tr> -->
+					<td><span th:text="*{transfer.friend.firstName}+' '+*{friend.lastName}"></span></td>
+						<td><span th:text="*{friend.firstName}+' '+*{friend.lastName}"></span></td>
+						<td><span th:text="${transfer.description}"></span></td>
+						<td><span th:text="*{amount}+'€'"></span></td>
+					</tr>
 				</tbody>
 			</table>
+			<nav th:if="${friendTransferPage.totalPages > 1}" style="margin-top: -40px; text-align: center">
+				<ul  class="pagination">
+				
+				<li class="page-item"
+                	th:classappend="${currentPage &gt; 1} ? '' : 'disabled'">
+               			<a th:if="${currentPage &gt; 1}" th:href="@{/transfer(size=${friendTransferPage.size}, page=${currentPage - 1})}" class="page-link"><span aria-hidden="true">&laquo;</span></a>
+                		<a th:if="${currentPage eq 1}"><span aria-hidden="true" class="page-link">&laquo;</span></a>
+            	</li>
+				
+    			<li th:class="!${pageNumber==friendTransferPage.number + 1} ? '' : 'disabled'"class="page-item" th:each="pageNumber : ${pageNumbers}">
+    				<a 	th:href="@{/transfer(size=${friendTransferPage.size}, page=${pageNumber})}"
+        				th:text=${pageNumber}
+        				th:class="!${pageNumber==friendTransferPage.number + 1} ? '' : 'active'" class="page-link"></a>
+        		</li>
+        		
+        		<li class="page-item"
+                	th:classappend="${currentPage &lt pageNumbers.size} ? '' : 'page-item disabled'">
+               			<a th:if="${currentPage &lt pageNumbers.size}" th:href="@{/transfer(size=${friendTransferPage.size}, page=${currentPage + 1})}" class="page-link"><span aria-hidden="true">&raquo;</span></a>
+                		<a th:if="${currentPage eq pageNumbers.size}"><span aria-hidden="true" class="page-link">&raquo;</span></a>
+            	</li>
+        		
+        		
+        		
+				</ul>
+			</nav>
 		</div>
 		</div>
 		</div>
 	</div>
 	</div>
-		 
-		
-	
-	
-	
-    
     </body>
