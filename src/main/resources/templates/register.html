@@ -6,53 +6,69 @@
    		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <title>Register</title>
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+        <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
+        <link th:href="@{/styles.css}" rel="stylesheet" />
+        <link th:href="@{/login.css}" rel="stylesheet" />
     	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
-    <body>
-    	<div class="container text-center">
-        <div>
-            <h1>User Registration - Sign Up</h1>
-        </div>
-        <form th:action="@{/addUser}" th:object="${user}"
-            method="post" style="max-width: 600px; margin: 0 auto;">
-        <div class="m-3">
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Email: </label>
-                <div class="col-8">
-                    <input type="email" th:field="*{email}" class="form-control" required />
-                </div>
-            </div>
-             
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Password: </label>
-                <div class="col-8">
-                    <input type="password" th:field="*{password}" class="form-control"
+    
+    <body></body>
+    <div class="bootstrap-iso">
+		<div class="container-fluid text-center">
+			<form th:action="@{/addUser}" th:object="${user}" method="post" style="max-width: 350px; margin: 0 auto;">
+				<div th:if="${param.error}">
+            		<p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+        		</div>
+         
+        		<div th:if="${param.logout}">
+           			 <p class="text-warning">You have been logged out.</p>
+       			 </div>
+       			 
+       			 <div th:if="${emailExistsMessage}" style="color:red;font-style:italic" th:utext="${emailExistsMessage}">..</div>
+       			 
+        		<div class="border border-secondary p-3 rounded">
+        			<h2 class="btn btn-success">Pay my Buddy</h2>
+        			<h3>User Registration - Sign Up</h3>
+        			<div class="input-group">
+   						<div class="input-group-addon">
+    						<i class="fa fa-envelope-o"></i>
+    					</div>
+                    	<input type="email" th:field="*{email}" class="form-control" placeholder="Email"required />
+                	</div>
+                	
+            		<div class="input-group">
+   						<div class="input-group-addon">
+    						<i class="fa fa-asterisk"></i>
+    					</div>
+                    	<input type="password" th:field="*{password}" class="form-control" placeholder="Password"
                             required minlength="6" maxlength="10"/>
-                </div>
-            </div>
+                	</div>
              
-            <div class="form-group row">
-                <label class="col-4 col-form-label">First Name: </label>
-                <div class="col-8">
-                    <input type="text" th:field="*{firstName}" class="form-control"
-                            required minlength="2" maxlength="20"/>
+             		<div class="input-group">
+   						<div class="input-group-addon">
+    						<i class="far fa-user"></i>
+    					</div>
+                   		<input type="text" th:field="*{firstName}" class="form-control" placeholder="First Name"
+                             minlength="2" maxlength="20" required/>
+                    </div>
+                    
+                    <div class="input-group">
+   						<div class="input-group-addon">
+    						<i class="fas fa-user"></i>
+    					</div>
+                   		<input type="text" th:field="*{lastName}" class="form-control" placeholder="Last Name"
+                             minlength="2" maxlength="20" required/>
+                    </div>
+                    <p>
+        				<input type="submit" value="Register" class="btn btn-primary font-weight-bold"/>
+   					</p>
                 </div>
-            </div>
-             
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Last Name: </label>
-                <div class="col-8">
-                    <input type="text" th:field="*{lastName}" class="form-control"
-                            required minlength="2" maxlength="20" />
-                </div>
-            </div>
-            
-            <div>
-                <button type="submit" class="btn btn-primary">Sign Up</button>
-            </div>
-        </div>
-        </form>
-    </div>
+            </form>
+   	</div>
+</div>
 </body>
 </html>

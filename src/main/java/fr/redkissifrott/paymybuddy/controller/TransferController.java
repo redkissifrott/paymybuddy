@@ -3,12 +3,17 @@ package fr.redkissifrott.paymybuddy.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,16 +47,20 @@ public class TransferController {
 	@GetMapping("/transfer")
 	public String transfer(
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			Model model, FriendTransfer friendtransfer, String errorMessage) {
+			Model model, FriendTransfer friendtransfer, String errorMessage,
+			@RequestParam("page") Optional<Integer> page,
+			@RequestParam("size") Optional<Integer> size) {
 		User user = userService.getUser(customUserDetails.getId()).get();
-		Iterable<FriendTransfer> friendTransfers = userService
-				.friendTransfers(user);
-		model.addAttribute("friendTransfers", friendTransfers);
 		model.addAttribute("transfer", new FriendTransfer());
 		model.addAttribute("user", user);
 		model.addAttribute("friend", new User());
+
+		int currentPage = page.orElse(1);
+		int pageSize = size.orElse(3);
+		Page<FriendTransfer> friendTransferPage = userService
+				.findPaginated(user, PageRequest.of(currentPage - 1, pageSize));
 		List<String> transactions = new ArrayList<>();
-		for (FriendTransfer f : friendTransfers) {
+		for (FriendTransfer f : friendTransferPage) {
 			logger.info("FRIENDTRANSFER : {}", f.getFriend().getFirstName());
 			logger.info("FRIENDTRANSFER : {}", f.getDescription());
 			String connection = f.getFriend().getFirstName() + " "
@@ -68,6 +77,33 @@ public class TransferController {
 			transactions.add(insert);
 		}
 		model.addAttribute("transactions", transactions);
+		model.addAttribute("friendTransferPage", friendTransferPage);
+		int totalPages = friendTransferPage.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+					.boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+			model.addAttribute("totalPages", totalPages);
+			model.addAttribute("currentPage", currentPage);
+		}
+		// List<String> transactions = new ArrayList<>();
+		// for (FriendTransfer f : friendTransfers) {
+		// logger.info("FRIENDTRANSFER : {}", f.getFriend().getFirstName());
+		// logger.info("FRIENDTRANSFER : {}", f.getDescription());
+		// String connection = f.getFriend().getFirstName() + " "
+		// + f.getFriend().getLastName();
+		// String description = f.getDescription();
+		// String amount = Integer.toString(f.getAmount()) + "€";
+		// String charges = "";
+		// if (f.getCharges() != null) {
+		// charges = Double.toString(f.getCharges()) + "€";
+		// }
+		// String insert = "<td>" + connection + "</td>" + "<td>" + description
+		// + "</td>" + "<td>" + amount + "</td>" + "<td>" + charges
+		// + "</td>";
+		// transactions.add(insert);
+		// }
+		// model.addAttribute("transactions", transactions);
 		return "transfer";
 	}
 

@@ -13,6 +13,8 @@ public interface FriendTransferRepository
 		extends
 			JpaRepository<FriendTransfer, Integer> {
 
-	ArrayList<FriendTransfer> findByUser(User user);
+	ArrayList<FriendTransfer> findAllByUser(User user);
+
+	ArrayList<FriendTransfer> findAllByUserOrderByIdDesc(User user);
 
 }

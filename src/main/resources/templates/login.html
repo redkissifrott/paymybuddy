@@ -2,22 +2,53 @@
 <html xmlns="http://www.w3.org/1999/xhml" xmlns:th="http://www.thymeleaf.org">
     
     <head>
-        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <title>Login</title>
+        <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+        <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
+        <link th:href="@{/styles.css}" rel="stylesheet" />
+        <link th:href="@{/login.css}" rel="stylesheet" />
+    	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
+    
     <body>
-		<div>
-			<form th:action="@{/doLogin}" method="post" style="max-width: 400px; margin: 0 auto;">
-    		<p>
-        		E-mail: <input type="email" name="email" required />  
-    		</p>
-    		<p>
-       			Password: <input type="password" name="password" required />
-    		</p>
-    		<p>
-        		<input type="submit" value="Login" />
-   			 </p>
+    <div class="bootstrap-iso">
+		<div class="container-fluid text-center">
+			<form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto;">
+				<div th:if="${param.error}">
+            		<p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+        		</div>
+         
+        		<div th:if="${param.logout}">
+           			 <p class="text-warning">You have been logged out.</p>
+       			 </div>
+        		<div class="border border-secondary p-3 rounded">
+        			<h2 class="btn btn-success">Pay my Buddy</h2>
+    				<div class="input-group">
+   						<div class="input-group-addon">
+    						<i class="fa fa-envelope-o"></i>
+    					</div>
+        				<input class="form-control" type="email" name="email" placeholder="Email" /> <!-- autofocus="autofocus" required --> 
+    				</div>
+    				<div class="input-group">
+   						<div class="input-group-addon">
+    						<i class="fa fa-asterisk"></i>
+    					</div>
+       					<input class="form-control" type="password" name="password" placeholder="Password" required />
+    				</div>
+    				<p>
+    					<input type="checkbox" name="remember-me" style="margin: 0 auto 60px"/>&nbsp;Remember Me
+    				</p>
+    				<p>
+        				<input type="submit" value="Login" class="btn btn-primary font-weight-bold"/>
+   					</p>
+   			 	</div>
 			</form>
 		</div>
+	</div>
 	</body>
 </html>

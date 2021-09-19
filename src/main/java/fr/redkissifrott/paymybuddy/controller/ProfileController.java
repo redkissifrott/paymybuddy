@@ -1,6 +1,7 @@
 package fr.redkissifrott.paymybuddy.controller;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +52,10 @@ public class ProfileController {
 	@GetMapping("/profile")
 	public String profile(
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			Model model) {
+			Model model, String errorMessage,
+			@RequestParam("page") Optional<Integer> page,
+			@RequestParam("size") Optional<Integer> size) {
 		User user = userService.getUser(customUserDetails.getId()).get();
-		// Iterable<BankTransfer> bankTransfers = new ArrayList<>();
 		model.addAttribute("bankTransfer", new BankTransfer());
 		model.addAttribute("user", user);
 		model.addAttribute("bank", new Bank());

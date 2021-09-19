@@ -5,18 +5,22 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <title>Welcome to PayMyBuddy</title>
-        <link th:href="@{/styles.css}" rel="stylesheet" />
+        <link type="text/css" href="/styles.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
     	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
    		<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     </head>
     <body>
+    <div class="bootstrap-iso">
     <div class="container text-center max-width:700px home">
     	<img class="img-fluid max-width: 70%" th:src="@{/img/PayMyBuddy.png}"/>
     
         
-        <a class="btn btn-primary btn-lg homebtn" href="/register">Register</a>
-        <a class="btn btn-primary btn-lg homebtn"  href="/login">Login</a>
+        <a class="btn btn-primary font-weight-bold homebtn" href="/register">Register</a>
+        <a class="btn btn-primary font-weight-bold homebtn"  href="/login">Login</a>
+        <a class="btn btn-warning font-weight-bold homebtn"  href="/logout">Log off</a>
     </div>
+   </div>
 </body>
 </html>
